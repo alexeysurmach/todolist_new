@@ -8,14 +8,17 @@ class App extends React.Component {
 
     state = {
         tasks: [
-            {title: 'JS', isDone: true, priority: ' -high'},
-            {title: 'Python', isDone: false, priority: ' -low'},
-            {title: 'Java', isDone: true, priority: ' -high'},
-            {title: 'C++', isDone: true, priority: ' -low'}
+            {id: 1, title: ' JS', isDone: false, priority: ' -high'},
+            {id: 2,title: ' Python', isDone: false, priority: ' -low'},
+            {id: 3,title: ' Java', isDone: true, priority: ' -high'},
+            {id: 4,title: ' C++', isDone: true, priority: ' -low'}
         ],
 
         filterValue: "All"
     };
+
+    nextTaskId=5;
+
     changeFilter = (newFilterValue) => {
         this.setState({
             filterValue: newFilterValue
@@ -25,17 +28,19 @@ class App extends React.Component {
     addTask = (newText) => {
         let newTask = {
             title: newText,
-            isDone: true,
-            priority: ' -low'
+            isDone: false,
+            priority: ' -low',
+            id: this.nextTaskId
         };
+        this.nextTaskId++
         let newTasks = [...this.state.tasks, newTask];
         this.setState({
             tasks: newTasks
         });
     };
-    changeStatus = (status, task) => {
+    changeStatus = (status, taskId) => {
         let tasksCopy = this.state.tasks.map(t => {
-            if (t == task) {
+            if (t.id == taskId) {
                 return {...t, isDone: status};
             }
             return t;
@@ -45,6 +50,19 @@ class App extends React.Component {
         });
     }
 
+    changeTitle = (title, taskId) => {
+        let tasksCopy = this.state.tasks.map(t => {
+            if (t.id == taskId) {
+                return {...t, title: title};
+            }
+            return t;
+        });
+        this.setState({
+            tasks: tasksCopy
+        });
+    }
+
+
     render = () => {
         return (
             <div className="App">
@@ -52,6 +70,7 @@ class App extends React.Component {
                     <TodoListHeader addTask={this.addTask}/>
                     <TodoListTasks
                         changeStatus={this.changeStatus}
+                        changeTitle={this.changeTitle}
                         tasks={this.state.tasks.filter(t => {
                             switch (this.state.filterValue) {
                                 case 'All':
